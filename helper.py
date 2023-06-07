@@ -20,3 +20,6 @@
 
 # print("Upper bound: ", upper_bound)
 # print("Lower Bound: ", lower_bound)
+
+# ideas:
+# show age of point level by opacity
