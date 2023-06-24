@@ -39,3 +39,48 @@ def preprocess():
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 5))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 5))
     return X_train, X_test, y_train, y_test, scaler
+
+def get_options(tSym):
+    'define ticker symbol'
+    stock = yf.Ticker(tSym)
+
+    expirations = stock.options
+    print(stock.options)
+    print(expirations[2])
+
+    options = stock.option_chain(f'{expirations[2]}')
+
+    print("OPTIONS: ", options)
+
+    calls = options.calls
+    puts = options.puts
+
+    # Calculate volume profile for each strike price for calls
+    volume_profile_calls = calls.groupby('strike').volume.sum()
+
+    # Calculate volume profile for each strike price for puts
+    volume_profile_puts = puts.groupby('strike').volume.sum()
+
+
+    current_price = stock.history().tail(1)['Close'].values[0]
+    print("Current price: ", current_price)
+
+    # Calculate the bounds
+    lower_bound = current_price * 0.9
+    upper_bound = current_price * 1.1
+
+    filtered_volume_profile = volume_profile_calls[(volume_profile_calls.index >= lower_bound) & (volume_profile_calls.index <= upper_bound)]
+
+    print("Volkuyme ", filtered_volume_profile)
+
+    plt.figure(figsize=(10,5))
+    plt.barh(filtered_volume_profile.index, filtered_volume_profile.values, height=0.5)
+    plt.xlabel("Volume")
+    plt.ylabel("Price")
+    plt.title("Volume Profile")
+    plt.grid(True)
+    plt.show()
+
+
+
+    # return opt
