@@ -6,7 +6,7 @@ import numpy as np
 
 #     # append volume profile to dataset
 #     # data['VolumeProfile'] = data['Close'].map(volume_profile)
-
+# test
 def preprocess():
     data = yf.download(tickers='AMD', period='30d', interval='15m')
     data = data.drop(columns=['Adj Close'])

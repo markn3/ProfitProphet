@@ -20,7 +20,7 @@ model.add(Dense(units=1))
 print("Compiling")
 model.compile(optimizer='adam', loss='mean_squared_error')
 print("Training")
-model.fit(X_train, y_train, batch_size=32, epochs=100)
+model.fit(X_train, y_train, batch_size=64, epochs=200)
 
 print("multi-step forecasting")
 # Perform multi-step forecasting
