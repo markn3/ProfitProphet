@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
@@ -63,24 +64,37 @@ def get_options(tSym):
 
 
     current_price = stock.history().tail(1)['Close'].values[0]
-    print("Current price: ", current_price)
 
     # Calculate the bounds
     lower_bound = current_price * 0.9
     upper_bound = current_price * 1.1
 
-    filtered_volume_profile = volume_profile_calls[(volume_profile_calls.index >= lower_bound) & (volume_profile_calls.index <= upper_bound)]
+    volume_profile_calls = volume_profile_calls[(volume_profile_calls.index >= lower_bound) & (volume_profile_calls.index <= upper_bound)]
+    volume_profile_puts = volume_profile_puts[(volume_profile_puts.index >= lower_bound) & (volume_profile_puts.index <= upper_bound)]
 
-    print("Volkuyme ", filtered_volume_profile)
+    volume_profile_calls = volume_profile_calls.reset_index()
+    volume_profile_puts = volume_profile_puts.reset_index()
+    
+    # Apply the default theme
+    sns.set_theme()
 
-    plt.figure(figsize=(10,5))
-    plt.barh(filtered_volume_profile.index, filtered_volume_profile.values, height=0.5)
-    plt.xlabel("Volume")
-    plt.ylabel("Price")
-    plt.title("Volume Profile")
-    plt.grid(True)
+
+    # Create a horizontal barplot for calls
+    sns.barplot(x='volume', y='strike', data=volume_profile_calls, color='blue', label='Calls', orient='h', alpha=0.5)
+
+    # Create a horizontal barplot for puts
+    sns.barplot(x='volume', y='strike', data=volume_profile_puts, color='red', label='Puts', orient='h', alpha=0.5)
+
+    # Provide labels
+    plt.title('Options Volume Profile')
+    plt.xlabel('Volume')
+    plt.ylabel('Strike Price')
+
+    # Reverse the y-axis
+    plt.gca().invert_yaxis()
+
+    # Add a legend
+    plt.legend()
+
+    # Display the plot
     plt.show()
-
-
-
-    # return opt
